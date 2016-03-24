@@ -3,7 +3,7 @@
 import os,sys
 import begin
 import logging
-import MySQLdb
+import _mysql
 
 from teleinfo.teleinfo_serial import Teleinfo_serial
 
@@ -55,12 +55,12 @@ def insertTeleinfoMySQL(ti,host,user,password,database,table) :
   sql = "INSERT INTO %s (%s) VALUES (%s)" % (table,columns,placeholders)
 
   try:
-    con = MySQLdb.connect(
+    con = _mysql.connect(
          host=host,
          user=user,
          passwd=password,
          db=database)
-  except MySQLdb.Error, e:
+  except MySQLdb.Error as e:
     logging.error("[connectMySQL] Error [%d]: %s" % (e.args[0], e.args[1]))
     sys.exit(1)
   cursor = con.cursor()

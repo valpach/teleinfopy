@@ -80,7 +80,7 @@ class Teleinfo_serial:
                 for c in etiquette: sum = sum + ord(c)
                 for c in valeur:        sum = sum + ord(c)
                 sum = (sum & 63) + 32
-                #print 'checksum of %s %s is %c' %(etiquette,valeur,sum)
+                #print('checksum of %s %s is %c' %(etiquette,valeur,sum))
                 return chr(sum)
 
         def read (self,framesOK):
@@ -146,7 +146,7 @@ DEMAIN ROUG +\r
             brk-=1
             if brk<0:
               break
-            print '----------------'
+            print('----------------')
             print('###  brk  %d ###' % brk)
             frames = [ frame.split(" ") for frame in message.strip("\r\n\x03").split("\r\n")]
 
@@ -159,12 +159,12 @@ DEMAIN ROUG +\r
                 print('invalid checksum for frame %s' %(frame[0]))
 
             for k,frame in framesOK.items():
-              print "%s : %s" %(k,frame)
-            print '----------------\n'
+              print("%s : %s" %(k,frame))
+            print('----------------\n')
 
             time.sleep(0.3)
 
-          print framesOK.values()
+          print(framesOK.values())
 
           return framesOK
         def close (self):
