@@ -3,9 +3,9 @@
 import os,sys
 import begin
 import logging
-import MySQLdb
 
 from teleinfo.teleinfo_serial import Teleinfo_serial
+import paho.mqtt.client as mqtt
 
 
 
@@ -42,50 +42,29 @@ framesTI={
   'PPOT':''}
 
 
-#-------------------------------------------------------------
-# Insertion d'un jeu de mesure dans la base mySQL
-#-------------------------------------------------------------
-def insertTeleinfoMySQL(ti,host,user,password,database,table) :
+def mqtt_publish(ti):
+  client = mqtt.Client()
+  client.username_pw_set('admin', password='kiloNudo')
 
-  if(type(ti)!=dict):
-    logging.error("Format des données invalides")
-    sys.exit(1)
-  placeholders = ', '.join(['%s'] * len(ti))
-  columns = ', '.join(ti.keys())
-  sql = "INSERT INTO %s (%s) VALUES (%s)" % (table,columns,placeholders)
-
-  try:
-    con = MySQLdb.connect(
-         host=host,
-         user=user,
-         passwd=password,
-         db=database)
-  except MySQLdb.Error, e:
-    logging.error("[connectMySQL] Error [%d]: %s" % (e.args[0], e.args[1]))
-    sys.exit(1)
-  cursor = con.cursor()
-
-  try :
-    # On insere dans la base
-    cursor.execute(sql,ti.values())
-    con.commit()
-  except MySQLdb.Error as e:
-    con.rollback()
-    logging.error("%s",e)
-  con.close()
+  client.connect("10.0.0.22", 1883, 60)
+  client.loop_start()
+  client.publish('teleinfo/PAPP', int(ti['PAPP']))
+  hc=str(int(ti['HCHC']))
+  hp=str(int(ti['HCHP']))
+  client.publish('teleinfo/HC', hc[:5])
+  client.publish('teleinfo/HP', hp[:5])
+  client.disconnect()
 
 
 @begin.start(config_file='teleinfo.cfg')
 @begin.logging
-def default(device='/dev/ttyAMA0',db_host='localhost',db_user='root',db_password='root',db_database='teleinfo',db_table='DbiTeleinfo'):
+def default(device='/dev/ttyAMA0'):
   logging.info("device : %s",device)
   serial_device=Teleinfo_serial(port=device)
   serial_device.set_mode('TEMPO')
   data=serial_device.read(framesTI)
-  insertTeleinfoMySQL(data,db_host,db_user,db_password,db_database,db_table)
+  mqtt_publish(data)
   logging.info("insertion des données")
-
-
 
 
 
