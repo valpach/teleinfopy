@@ -1,0 +1,17 @@
+[default]
+device=/dev/ttyAMA0
+mode=mqtt
+mqtt_host=localhost
+mqtt_user=usermqtt
+mqtt_password=passowrd
+mqtt_port=1883                                                                                           
+db_host=localhost
+db_user=teleinfo
+db_password=teleinfo
+db_database=edf
+db_table=teleinfo
+
+[logging]
+level=INFO
+file=teleinfo.log
+
