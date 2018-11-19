@@ -42,11 +42,11 @@ framesTI={
   'PPOT':''}
 
 
-def mqtt_publish(ti):
+def mqtt_publish(ti,mqtt_host, mqtt_user, mqtt_password, mqtt_port):
   client = mqtt.Client()
-  client.username_pw_set('admin', password='kiloNudo')
+  client.username_pw_set(mqtt_user, password=mqtt_password)
 
-  client.connect("10.0.0.22", 1883, 60)
+  client.connect(mqtt_host, mqtt_port, 60)
   client.loop_start()
   client.publish('teleinfo/PAPP', int(ti['PAPP']))
   hc=str(int(ti['HCHC']))
@@ -58,14 +58,13 @@ def mqtt_publish(ti):
 
 @begin.start(config_file='teleinfo.cfg')
 @begin.logging
-def default(device='/dev/ttyAMA0'):
+def default(device='/dev/ttyAMA0',mode='mqtt',mqtt_host, mqtt_user, mqtt_password, mqtt_port):
   logging.info("device : %s",device)
   serial_device=Teleinfo_serial(port=device)
   serial_device.set_mode('TEMPO')
   data=serial_device.read(framesTI)
-  mqtt_publish(data)
+  if mode == 'mqtt':
+    mqtt_publish(data,mqtt_host, mqtt_user, mqtt_password, mqtt_port)
   logging.info("insertion des données")
-
-
 
 
