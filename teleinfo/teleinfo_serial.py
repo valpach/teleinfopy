@@ -6,7 +6,7 @@ import logging
 import sys
 import time
 
-TEMPO_TI={
+TI={
   'ADCO':'O',
   'OPTARIF':'O',
   'ISOUSC':'O',
@@ -46,7 +46,7 @@ class Teleinfo_serial:
                 try:
                   self.port=port
                   self.ser = serial.Serial()
-                  self.validate=None
+                  self.validate=TI
                 except OSError as e:
                   logging.critical('Could not open serial port : %s',e)
                   sys.exit(1)
@@ -68,11 +68,6 @@ class Teleinfo_serial:
                   sys.exit(1)
 
                 time.sleep(1)
-
-
-        def set_mode (self, mode):
-          if mode=='TEMPO':
-            self.validate=TEMPO_TI
 
 
         def checksum (self, etiquette, valeur):
