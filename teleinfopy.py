@@ -61,8 +61,8 @@ def mqtt_publish(ti,mqtt_host, mqtt_user, mqtt_password, mqtt_port):
 def default(device='/dev/ttyAMA0',mode='mqtt',mqtt_host, mqtt_user, mqtt_password, mqtt_port):
   logging.info("device : %s",device)
   serial_device=Teleinfo_serial(port=device)
-  serial_device.set_mode('TEMPO')
   data=serial_device.read(framesTI)
+  serial_device.close()
   if mode == 'mqtt':
     mqtt_publish(data,mqtt_host, mqtt_user, mqtt_password, mqtt_port)
   logging.info("insertion des données")
