@@ -1,0 +1,14 @@
+[Unit]
+Description=Teleinfo
+After=network.target
+
+[Service]
+Environment=PYTHONUNBUFFERED=true
+Type=notify
+#WorkingDirectory=/home/pi/teleinfopy
+ExecStart=/home/pi/teleinfopy/teleinfopy.py
+WatchdogSec=120
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
