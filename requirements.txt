@@ -2,7 +2,10 @@ argparse==1.2.1
 begins==0.9
 funcsigs==0.4
 logging==0.4.9.6
-pyserial==2.7
+pyserial==3.4
 wsgiref==0.1.2
-paho-mqtt
-sdnotify
+paho-mqtt==1.4.0
+sdnotify==0.3.2
+RPi.GPIO==0.6.5
+
+

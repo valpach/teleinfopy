@@ -5,7 +5,6 @@ After=network.target
 [Service]
 Environment=PYTHONUNBUFFERED=true
 Type=notify
-#WorkingDirectory=/home/pi/teleinfopy
 ExecStart=/home/pi/teleinfopy/teleinfopy.py
 WatchdogSec=120
 Restart=on-failure

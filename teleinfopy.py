@@ -1,4 +1,4 @@
-#!/home/pi/venvs/teleinfopy/bin/python2
+#!/home/teleinfo/.virtualenvs/teleinfopy/bin/python2
 # -*- coding: utf-8 -*-
 
 import begin
@@ -6,6 +6,11 @@ import logging
 import time
 import sdnotify
 import datetime
+try:
+  import RPi.GPIO as GPIO
+except RuntimeError:
+ print("Error importing RPi.GPIO!  This is probably because you need superuser privileges.  You can achieve this by using 'sudo' to run your script")
+
 
 from teleinfo.teleinfo_serial import Teleinfo_serial
 import paho.mqtt.client as mqtt
@@ -53,11 +58,18 @@ def default(device='/dev/ttyAMA0',
             mqtt_host='localhost',
             mqtt_user='user',
             mqtt_password='password',
-            mqtt_port=1883):
+            mqtt_port=1883,
+            led_gpio=7):
   logging.info("device : %s",device)
+  logging.info("led : %s",led_gpio)
   serial_device=Teleinfo_serial(port=device)
   n = sdnotify.SystemdNotifier()
   n.notify("READY=1")
+  if led > 0 :
+    GPIO.setmode(GPIO.BOARD)   # Use physical pin numbering
+    GPIO.setwarnings(False)    # Ignore warning for now
+    GPIO.setup(led,GPIO.OUT)
+
   try:
     while True:
       n.notify("WATCHDOG=1")
@@ -65,11 +77,17 @@ def default(device='/dev/ttyAMA0',
       data=serial_device.read(framesHCTI)
       if data is False:
         continue
+      if led_gpio > 0 :
+        GPIO.output(led,GPIO.HIGH)
       if mode == 'mqtt':
         mqtt_publish(data,mqtt_host, mqtt_user, mqtt_password, mqtt_port)
-      time.sleep(20)
+      if led_gpio > 0 :
+        time.sleep(0.8)
+        GPIO.output(led,GPIO.LOW)
+      time.sleep(15)
   except KeyboardInterrupt:
     pass
   serial_device.close()
+  GPIO.output(led,GPIO.LOW)
 
 

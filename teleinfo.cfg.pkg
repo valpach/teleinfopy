@@ -10,6 +10,7 @@ db_user=teleinfo
 db_password=teleinfo
 db_database=edf
 db_table=teleinfo
+led_gpio=4
 
 [logging]
 level=INFO
