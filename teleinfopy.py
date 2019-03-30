@@ -1,4 +1,4 @@
-#!/home/teleinfo/.virtualenvs/teleinfopy/bin/python2
+#!/home/pi/venvs/teleinfopy/bin/python2
 # -*- coding: utf-8 -*-
 
 import begin
@@ -14,6 +14,8 @@ except RuntimeError:
 
 from teleinfo.teleinfo_serial import Teleinfo_serial
 import paho.mqtt.client as mqtt
+
+
 
 framesHCTI={
   'HCHC':'O',
@@ -63,12 +65,14 @@ def default(device='/dev/ttyAMA0',
   logging.info("device : %s",device)
   logging.info("led : %s",led_gpio)
   serial_device=Teleinfo_serial(port=device)
+  led=int(led_gpio)
   n = sdnotify.SystemdNotifier()
   n.notify("READY=1")
   if led > 0 :
     GPIO.setmode(GPIO.BOARD)   # Use physical pin numbering
     GPIO.setwarnings(False)    # Ignore warning for now
     GPIO.setup(led,GPIO.OUT)
+
 
   try:
     while True:
